@@ -1,11 +1,14 @@
-a.out: main.o prog1.o slp.o util.o maxarg.o
-	cc -g main.o prog1.o slp.o util.o maxarg.o
+a.out: main.o prog1.o slp.o util.o maxarg.o interp.o
+	cc -g main.o prog1.o slp.o util.o maxarg.o interp.o
 
 main.o: main.c slp.h util.h
 	cc -g -c main.c
 
 maxarg.o: maxarg.c maxarg.h
 	cc -g -c maxarg.c
+
+interp.o: interp.c interp.h
+	cc -g -c interp.c
 
 prog1.o: prog1.c slp.h util.h
 	cc -g -c prog1.c
@@ -17,4 +20,4 @@ util.o: util.c util.h
 	cc -g -c util.c
 
 clean: 
-	rm -f a.out util.o prog1.o slp.o maxarg.o main.o
+	rm -f a.out util.o prog1.o slp.o maxarg.o interp.o main.o *.*~
