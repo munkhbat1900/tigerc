@@ -21,9 +21,12 @@ void adjust(void)
 
 %}
 
+%x COMMENT
+
 %%
 " "	 {adjust(); continue;}
 \n	 {adjust(); EM_newline(); continue;}
+\t       {adjust(); continue;}
 ","	 {adjust(); return COMMA;}
 ":"      {adjust(); return COLON;}
 ";"      {adjust(); return SEMICOLON;}
@@ -65,8 +68,17 @@ do       {adjust(); return DO;}
 of       {adjust(); return OF;}
 nil      {adjust(); return NIL;}
 
+
 [0-9]+	 {adjust(); yylval.ival=atoi(yytext); return INT;}
-[A-Za-z][A-Za-z0-9_]*  {adjust(); yylval.sval = yytext; return ID;}
+[A-Za-z][A-Za-z0-9_]*  {adjust(); yylval.sval = String(yytext); return ID;}
+\"[a-zA-Z\-\\ 0-9._]*\"  {adjust(); yylval.sval = String(yytext); return STRING;}
+\"[^\"\n]*$            {adjust(); fprintf(stderr, "unterminated string");yylval.sval = String(yytext); return STRING;}
+
+"/*"     {adjust(); BEGIN COMMENT; }
+<COMMENT>"*/"   {adjust(); BEGIN INITIAL;}
+<COMMENT>.      {adjust();}
+
 .	 {adjust(); EM_error(EM_tokPos,"illegal token");}
+
 
 
